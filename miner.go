@@ -56,7 +56,7 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 	var hashes []string
 	err := c.Call(ctx, "generate", &hashes, 1)
 	if err != nil {
-		return "", fmt.Errorf("generate: %w", err)
+		return "", err
 	}
 	return hashes[0], nil
 }
