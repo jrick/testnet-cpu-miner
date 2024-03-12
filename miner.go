@@ -19,7 +19,7 @@ func init() {
 
 var (
 	targetBlockTime = flag.Duration("blocktime", 2*time.Minute, "target block duration")
-	retryDuration   = flag.Duration("retry", 30*time.Second, "duration to retry after errors")
+	retryDuration   = flag.Duration("retry", 30*time.Second, "duration to wait before retries after errors")
 	ws              = flag.String("ws", "wss://localhost:19109/ws", "websocket endpoint")
 	ca              = flag.String("ca", "", "path to dcrd certificate authority")
 	clientCert      = flag.String("cert", "", "path to client certificate")
