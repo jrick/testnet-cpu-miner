@@ -88,6 +88,12 @@ func main() {
 	ctx := context.Background()
 
 	tc := setupTLS()
+
+	// Hacky, but should probably be long enough to bring up RPC.
+	// Exact timing of when we get to work is not important.
+	log.Printf("connecting RPC in %v", *targetBlockTime)
+	time.Sleep(*targetBlockTime)
+
 	c, err := wsrpc.Dial(ctx, *ws, wsrpc.WithTLSConfig(tc))
 	if err != nil {
 		log.Fatal(err)
