@@ -53,6 +53,13 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
+	var generating bool
+	if err := c.Call(ctx, "getgenerate", &generating); err == nil && generating {
+		if err := c.Call(ctx, "setgenerate", nil, false); err != nil {
+			log.Printf("can't setgenerate false: %v", err)
+		}
+	}
+
 	var hashes []string
 	err := c.Call(ctx, "generate", &hashes, 1)
 	if err != nil {
