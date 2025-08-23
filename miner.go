@@ -50,24 +50,38 @@ func pollBestBlockTime(ctx context.Context, c *wsrpc.Client) (t time.Time, err e
 }
 
 func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
-	generateCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 16*time.Second)
 	defer cancel()
 
 	log.Print("starting cpu miner")
 
 	var hashes []string
-	err := c.Call(generateCtx, "generate", &hashes, 1)
-	if err != nil {
-		ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
-		defer cancel()
+	call := c.Go(ctx, "generate", &hashes, nil, 1)
 
-		log.Printf("generate: %v", err)
+	t := time.NewTimer(15 * time.Second)
+	defer t.Stop()
+	var stopped bool
+	select {
+	case <-call.Done():
+	case <-t.C:
 		log.Print("stopping cpu miner")
 
-		if err := c.Call(ctx, "generate", nil, 0); err != nil {
+		ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+		err := c.Call(ctx, "generate", nil, 0)
+		cancel()
+		if err != nil {
 			log.Printf("failed to disable CPU miner: %v", err)
+			break
 		}
+		stopped = true
+	}
 
+	_, err := call.Result()
+	if err != nil {
+		// Log unexpected errors not caused by stopping the miner.
+		if !stopped {
+			log.Printf("generate: %v", err)
+		}
 		return "", err
 	}
 	return hashes[0], nil
