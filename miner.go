@@ -60,11 +60,11 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 		}
 	}()
 
-	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	generateCtx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
 	var hashes []string
-	err := c.Call(ctx, "generate", &hashes, 1)
+	err := c.Call(generateCtx, "generate", &hashes, 1)
 	if err != nil {
 		return "", err
 	}
