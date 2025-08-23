@@ -71,9 +71,9 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 		cancel()
 		if err != nil {
 			log.Printf("failed to disable CPU miner: %v", err)
-			break
+		} else {
+			stopped = true
 		}
-		stopped = true
 
 		<-call.Done()
 	}
