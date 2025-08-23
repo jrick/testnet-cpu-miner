@@ -53,12 +53,12 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
-	var generating bool
-	if err := c.Call(ctx, "getgenerate", &generating); err == nil && generating {
-		if err := c.Call(ctx, "setgenerate", nil, false); err != nil {
-			log.Printf("can't setgenerate false: %v", err)
+	defer func() {
+		err := c.Call(ctx, "generate", nil, 0)
+		if err != nil {
+			log.Printf("Failed to disable CPU miner: %v", err)
 		}
-	}
+	}()
 
 	var hashes []string
 	err := c.Call(ctx, "generate", &hashes, 1)
