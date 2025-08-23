@@ -50,7 +50,7 @@ func pollBestBlockTime(ctx context.Context, c *wsrpc.Client) (t time.Time, err e
 }
 
 func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
 
 	var generating bool
