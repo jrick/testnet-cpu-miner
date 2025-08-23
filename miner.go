@@ -50,15 +50,18 @@ func pollBestBlockTime(ctx context.Context, c *wsrpc.Client) (t time.Time, err e
 }
 
 func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
-	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
-	defer cancel()
-
 	defer func() {
+		ctx, cancel := context.WithTimeout(ctx, 100*time.Millisecond)
+		defer cancel()
+
 		err := c.Call(ctx, "generate", nil, 0)
 		if err != nil {
 			log.Printf("Failed to disable CPU miner: %v", err)
 		}
 	}()
+
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
 
 	var hashes []string
 	err := c.Call(ctx, "generate", &hashes, 1)
