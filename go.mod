@@ -1,6 +1,6 @@
 module github.com/jrick/testnet-cpu-miner
 
-go 1.22.1
+go 1.25
 
 require github.com/jrick/wsrpc/v2 v2.3.5
 
