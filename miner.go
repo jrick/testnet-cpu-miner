@@ -126,19 +126,24 @@ func main() {
 			continue
 		}
 
+		var sleep time.Duration
+		var nextPoll time.Time
+
 		log.Print("starting cpu miner")
 		hash, err := generate(ctx, c)
 		if err != nil {
 			log.Printf("generate: %v", err)
 
-			minSleep := min(*retryDuration, *targetBlockTime)
-			time.Sleep(minSleep)
+			sleep = min(*retryDuration, *targetBlockTime)
+			nextPoll = time.Now().Add(sleep)
 		} else {
 			log.Printf("generate: mined block %s", hash)
+
+			nextPoll = time.Now().Add(*targetBlockTime)
+			sleep = time.Until(nextPoll)
 		}
 
-		wait := time.Now().Add(*targetBlockTime)
-		log.Printf("polling blocks again at %v", wait.Truncate(100*time.Millisecond))
-		time.Sleep(time.Until(wait))
+		log.Printf("polling blocks again at %v", nextPoll.Truncate(100*time.Millisecond))
+		time.Sleep(sleep)
 	}
 }
