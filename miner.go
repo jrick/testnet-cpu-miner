@@ -74,6 +74,8 @@ func generate(ctx context.Context, c *wsrpc.Client) (string, error) {
 			break
 		}
 		stopped = true
+
+		<-call.Done()
 	}
 
 	_, err := call.Result()
