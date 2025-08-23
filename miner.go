@@ -126,13 +126,6 @@ func main() {
 		log.Print("starting cpu miner")
 		hash, err := generate(ctx, c)
 		if err != nil {
-			// Even if this errors, chances are we successfully
-			// mined a block (or soon will).  There is no request
-			// cancellation with websockets (other than
-			// disconnecting), so a timed-out on the client side
-			// could still be running the miner on the server.
-			// Log the error just in case it holds something more
-			// interesting than a timeout.
 			log.Printf("generate: %v", err)
 
 			minSleep := min(*retryDuration, *targetBlockTime)
