@@ -150,7 +150,7 @@ func main() {
 		if err != nil {
 			sleep = min(*retryDuration, *targetBlockTime)
 		} else {
-			log.Printf("generate: mined block %s", hash)
+			log.Printf("generate: new block %s", hash)
 
 			sleep = *targetBlockTime
 		}
